@@ -1,0 +1,17 @@
+{% extends 'blog/base.html' %}
+
+{% block content %}
+<div class="block">
+  <form method="POST" class="post-form">
+    {% csrf_token %}
+    <table id="postform">
+      {{ form.as_table}}
+      <tr>
+        <td colspan=2 style='text-align: right;'>
+          <button type="submit" class="save btn btn-default">Save</button>
+        </td>
+      </tr>
+    </table>
+  </form>
+</div>
+{% endblock %}

@@ -1,0 +1,72 @@
+{% load staticfiles %}
+{% load pagination_filters %}
+{% load side_panel %}
+<html>
+	<head>
+		<title>BLOG</title>
+		<meta charset="utf-8">
+		<meta name="viewport" content="width=device-width, initial-scale=1">
+		<link rel="stylesheet" href="{% static 'css/new.css' %}">
+		<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.3.0/css/font-awesome.min.css">
+		<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+	</head>
+	<body>
+		<div id="header">
+			<a id="logo" href="/">Django Blog</a>
+			<div id="search">
+				<form id="search-form">
+					<input name="search" type="text"></input>
+					<input id="button-search" type="submit" value=""></input>
+				</form>
+			</div>
+					<a href="{% url 'post_new' %}"><i id="plus" class="fa fa-plus-square"></i></a>
+		</div>
+		<div id="content">
+		<div id="posts">
+		{% block content %}
+		{% endblock %}
+		</div>
+			<div class="sidemenu">
+				<div class="block">
+					<h2>Menu</h2>
+					<ul>
+						<li><li><a href="{% url 'post_new' %}">new post</a></li>
+						<li><a href="/">all notes</a></li>
+					</ul>
+				</div>
+					{% last_posts %}
+			</div>
+		</div>
+		<div id="pagination">
+		<p>
+			{% if posts.has_previous %}
+			←<a href="?page={{ posts.previous_page_number }}{% if search_query != '' %}&search={{ search_query }} {% endif %}">предыдущая</a>
+			{% endif %}
+			{% if posts.has_next %}
+			<a href="?page={{ posts.next_page_number }}{% if search_query != '' %}&search={{ search_query }} {% endif %}">следующая</a>→
+			{% endif %}
+		</p>
+		{% if posts.has_other_pages %}
+		<a href="?page=1{% if search_query != '' %}&search={{ search_query }} {% endif %}">←</a>
+		{% for page in posts.paginator.num_pages|truncate:posts.number %}
+		{% if page == posts.number %} {{page}}
+		{% else %} <a href="?page={{page}}{% if search_query != '' %}&search={{ search_query }} {% endif %}">{{page}}</a> {% endif %} {% endfor %}
+		<a href="?page={{ posts.paginator.num_pages }}{% if search_query != '' %}&search={{ search_query }} {% endif %}"> → </a>
+		{% endif %}
+		{% comment  %}
+		<ul class="menu_top paginator">
+		{% if posts.has_previous %}
+			<li> <a href="?page=1"><<</a> </li>
+			<li>  <a href="?page={{ posts.previous_page_number }}">{{ posts.previous_page_number }}</a> </li>
+			{% endif %}
+			{% if posts.has_other_pages %}<li>   <a style="color: #000000"  href="">{{ posts.number }}</a></li> {% endif %}
+			{% if posts.has_next %}
+			<li> <a href="?page={{ posts.next_page_number }}">      {{ posts.next_page_number }}</a> </li>
+			<!--li> <a href="?page={{ posts.next_page_number|add:1 }}">{{ posts.next_page_number|add:1 }}</a></li-->
+			<li> <a href="?page={{ posts.paginator.num_pages }}">    >> </a></li>           {% endif %}
+		{% endcomment %}
+		</ul>
+		</div>
+	</body>
+
+</html>

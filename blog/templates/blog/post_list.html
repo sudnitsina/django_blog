@@ -1,0 +1,28 @@
+{% extends 'blog/base.html' %}
+{% comment %} {% load pagination_tags %} {% endcomment %}
+
+{% block content %}
+{% if posts %}
+{% for post in posts %}
+<div class="post">
+	<div class="post-header">
+		<h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+		<div class="date"><i class="fa fa-calendar"></i> {{ post.published_date}}</div>
+		{% if post.tags.names %}
+		<div class="tag">
+			<i class="fa fa-tags"></i>
+			{% for tag in post.tags.all %}
+			<a href="{% url 'post_list' tag_slug=tag.slug%}">{{ tag.name }}</a>
+      {% endfor %}
+		</div>
+		{% endif %}
+	</div>
+	{{ post.text|safe|linebreaksbr|truncatewords:80 }}<br>
+</div>
+{% endfor %}
+{% else %}
+<div class="post">
+	<p>Ничего не найдено</p>
+</div>
+{% endif %}
+{% endblock content %}
