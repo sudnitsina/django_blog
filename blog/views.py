@@ -11,7 +11,7 @@ from .forms import PostForm
 def post_list(request, tag_slug=None):
     if tag_slug is None:
         list_ = Post.objects.filter(published_date__lte=timezone.now()
-                                        ).order_by('-published_date')  # [int(page)*5-5:int(page)*5]
+                                    ).order_by('-published_date')  # [int(page)*5-5:int(page)*5]
     else:
         list_ = Post.objects.filter(tags__slug=tag_slug).order_by('-published_date')
     search_query = ''
@@ -64,7 +64,7 @@ def post_new(request):
 def post_edit(request, pk):
         post = get_object_or_404(Post, pk=pk)
         if request.method == "POST":
-            form = PostForm(request.POST, instance = post)
+            form = PostForm(request.POST, instance=post)
             if form.is_valid():
                 post = form.save(commit=False)
                 post.author = request.user
