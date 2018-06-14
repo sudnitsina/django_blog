@@ -1,0 +1,5 @@
+[
+  {"model": "auth.user", "pk": 1, "fields": {"username": "tester", "password": "tester", "email": "tester@gmail.com"}},
+  {"model": "blog.post", "pk": 1, "fields": {"author": 1, "title": "Django documentation", "text": "Everything you need to know about Django.", "created_date": "2018-03-14T03:26:20.023Z", "published_date": "2018-03-14T03:26:20.026Z"}},
+  {"model": "blog.post", "pk": 2, "fields": {"author": 1, "title": "Testing tools", "text": "Django provides a small set of tools that come in handy when writing tests.", "created_date": "2018-03-14T03:27:12.146Z", "published_date": "2018-03-14T03:27:12.149Z"}}
+]
