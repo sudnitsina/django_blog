@@ -24,6 +24,9 @@ class Post(models.Model):
     def __unicode__(self):
         return self.title
 
+    def __str__(self):
+        return self.title
+
 
 def font_size(self):
     max_font = 28
@@ -32,7 +35,7 @@ def font_size(self):
     max_tag, min_tag = v["c__max"], v["c__min"]
     try:
         step = (max_font - min_font)/float(max_tag-min_tag)
-    except:
+    except ZeroDivisionError:
         step = 1
     tag_count = Post.objects.filter(tags__name=self.name).count()
     font = int(min_font + (tag_count-min_tag)*step)

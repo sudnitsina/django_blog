@@ -9,11 +9,13 @@ from .forms import PostForm
 
 
 def post_list(request, tag_slug=None):
-    if tag_slug is None:
-        list_ = Post.objects.filter(published_date__lte=timezone.now()
-                                    ).order_by('-published_date')  # [int(page)*5-5:int(page)*5]
+    if request.user.is_authenticated():
+        list_ = Post.objects.order_by('-created_date')
     else:
-        list_ = Post.objects.filter(tags__slug=tag_slug).order_by('-published_date')
+        list_ = Post.objects.filter(published_date__lte=timezone.now()
+                                    ).order_by('-published_date')
+    if tag_slug is not None:
+        list_ = list_.filter(tags__slug=tag_slug)
     search_query = ''
     if request.GET.get('search'):
         search_query = request.GET.get('search')
