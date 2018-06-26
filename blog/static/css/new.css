@@ -85,6 +85,9 @@
 			margin: 5px
 			width: 100px;
 		}
+		.fa-rss {
+		    text-decoration: underline;
+		}
 		h2 {
 			font-size: 26.25px;
 			line-height: 31.5px;
@@ -107,7 +110,7 @@
 			width: 200px;
 		}
 		input#button-search {
-			background: url('https://touchit.com.ua/static/images/icons/search-25.png') no-repeat center center;
+			background: url('/static/img/search.png') no-repeat center center;
 			border: none;
 			cursor: pointer;
 			height: 32px;

@@ -18,6 +18,7 @@
 		{% endif %}
 	</div>
 	{{ post.text|safe|linebreaksbr|truncatewords_html:80 }}<br>
+	<a href="{% url 'post_detail' pk=post.pk %}">Читать далее</a>
 </div>
 {% endfor %}
 {% else %}

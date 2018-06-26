@@ -19,7 +19,7 @@
 					<input id="button-search" type="submit" value="">
 				</form>
 			</div>
-					<a href="{% url 'post_new' %}"><i id="plus" class="fa fa-plus-square"></i></a>
+			<a href="{% url 'post_new' %}"><i id="plus" class="fa fa-plus-square"></i></a>
 		</div>
 		<div id="content">
 		<div id="posts">
@@ -32,9 +32,10 @@
 					<ul>
 						<li><li><a href="{% url 'post_new' %}">new post</a></li>
 						<li><a href="/">all notes</a></li>
+						<a href="{% url 'rss' %}" rel="alternate" type="application/rss+xml">RSS <i class="fa fa-rss"></i></a>
 					</ul>
 				</div>
-					{% last_posts %}
+				{% last_posts %}
 			</div>
 		</div>
 		<div id="pagination">

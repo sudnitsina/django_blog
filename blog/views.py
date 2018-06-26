@@ -1,11 +1,14 @@
 from django.contrib.auth.decorators import login_required
+from django.contrib.syndication.views import Feed
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
+from django.core.urlresolvers import reverse
 from django.db.models import Q
 from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.utils import timezone
+from django.utils.text import Truncator
 
-from .models import Post
 from .forms import PostForm
+from .models import Post
 
 
 def post_list(request, tag_slug=None):
@@ -76,3 +79,19 @@ def post_edit(request, pk):
         else:
             form = PostForm(instance=post)
         return render(request, 'blog/post_edit.html', {'form': form})
+
+
+class RSSFeed(Feed):
+    title = "django-blog"
+    link = "/rss/"
+    description = "Updates on sudnitsina.pythonanywhere.com."
+
+    def items(self):
+        return Post.objects.filter(published_date__lte=timezone.now()
+                                   ).order_by('-published_date')[:5]
+
+    def item_description(self, item):
+        return Truncator(item.text).words(20, html=True)
+
+    def item_link(self, item):
+        return reverse('post_detail', kwargs={'pk': item.pk})
