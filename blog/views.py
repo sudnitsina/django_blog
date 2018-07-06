@@ -15,16 +15,14 @@ def post_list(request, tag_slug=None):
     if request.user.is_authenticated():
         list_ = Post.objects.order_by('-created_date')
     else:
-        list_ = Post.objects.filter(published_date__lte=timezone.now()
-                                    ).order_by('-published_date')
+        list_ = Post.objects.filter(published_date__lte=timezone.now())
     if tag_slug is not None:
         list_ = list_.filter(tags__slug=tag_slug)
     search_query = ''
     if request.GET.get('search'):
         search_query = request.GET.get('search')
         list_ = Post.objects.filter(
-            Q(title__contains=search_query) | Q(text__contains=search_query)
-        ).order_by('-published_date')
+            Q(title__contains=search_query) | Q(text__contains=search_query))
     paginator = Paginator(list_, 5)
     page = request.GET.get('page')
     try:
@@ -87,8 +85,7 @@ class RSSFeed(Feed):
     description = "Updates on sudnitsina.pythonanywhere.com."
 
     def items(self):
-        return Post.objects.filter(published_date__lte=timezone.now()
-                                   ).order_by('-published_date')[:5]
+        return Post.objects.filter(published_date__lte=timezone.now())[:5]
 
     def item_description(self, item):
         return Truncator(item.text).words(20, html=True)
