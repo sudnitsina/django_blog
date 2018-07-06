@@ -37,8 +37,8 @@
 	<div id="disqus_thread"></div>
 	<script>
 	var disqus_config = function () {
-	//this.page.url = ;  // Replace PAGE_URL with your page's canonical URL variable
-	this.page.identifier = "{% url 'post_detail' pk=post.pk %}"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
+	//this.page.url = {{ request.get_host }}; // Replace PAGE_URL with your page's canonical URL variable
+	this.page.identifier = "{% post.pk %}"; // Replace PAGE_IDENTIFIER with your page's unique identifier variable
 	};
 
 	(function() { // DON'T EDIT BELOW THIS LINE
