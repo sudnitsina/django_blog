@@ -2,7 +2,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.syndication.views import Feed
 from django.core.paginator import Paginator, EmptyPage, PageNotAnInteger
 from django.core.urlresolvers import reverse
-from django.db.models import Q
+from django.db.models import F, Q
 from django.shortcuts import get_object_or_404, redirect, render, render_to_response
 from django.utils import timezone
 from django.utils.text import Truncator
@@ -13,7 +13,7 @@ from .models import Post
 
 def post_list(request, tag_slug=None):
     if request.user.is_authenticated():
-        list_ = Post.objects.order_by('-created_date')
+        list_ = Post.objects.order_by(F('published_date').desc(nulls_first=True))
     else:
         list_ = Post.objects.filter(published_date__lte=timezone.now())
     if tag_slug is not None:
