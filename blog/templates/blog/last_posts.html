@@ -4,6 +4,8 @@
 {% for i in post_list %}
   <li><a href="{% url 'post_detail' pk=i.pk %}"> {{ i.title }} </a> <br>
   <div class="date"> {{ i.published_date }} </div>
+{% empty %}
+  <li>В блоге еще нет записей</li>
 {% endfor %}
 </ul>
 </div>
