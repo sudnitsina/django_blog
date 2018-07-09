@@ -1,6 +1,9 @@
 from django.contrib.auth.models import User
+from django.template import Template, Context
 from django.test import TestCase
 from django.urls import reverse
+
+from blog.models import Post
 
 
 class BlogTest(TestCase):
@@ -62,3 +65,27 @@ class BlogTest(TestCase):
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
         self.assertContains(res, 'Testing tools')
+
+
+class BlogAppearanceTest(TestCase):
+
+    def test_empty_list(self):
+        url = reverse('post_list')
+        res = self.client.get(url)
+        self.assertContains(res, 'Ничего не найдено')
+
+
+class SidePanelTest(TestCase):
+    TEMPLATE = Template("{% load side_panel %}{% last_posts %}")
+
+    def test_empty(self):
+        rendered = self.TEMPLATE.render(Context({}))
+        self.assertIn('В блоге еще нет записей', rendered)
+
+    def test_many_posts(self):
+        user = User.objects.get_or_create(username='tester')[0]
+        for n in range(6):
+            Post(author=user, title="Post #{0}".format(n)).publish()
+        rendered = self.TEMPLATE.render(Context({}))
+        self.assertIn("Post #5", rendered)
+        self.assertNotIn("Post #6", rendered)
