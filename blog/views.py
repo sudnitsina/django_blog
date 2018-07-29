@@ -35,16 +35,21 @@ def post_list(request, tag_slug=None):
                               {'posts': posts, 'search_query': search_query})
 
 
-def post_detail(request, pk):
-    post = get_object_or_404(Post, pk=pk)
+def post_detail(request, slug):
+    post = get_object_or_404(Post, slug=slug)
     tags = post.tags.names()
     if request.POST.get('action') == 'delete':
         if request.user.is_authenticated():
             post.delete()
             return redirect('/')
         else:
-            return redirect('/admin/login/?next=/post/' + pk)
+            return redirect('/admin/login/?next=/post/' + slug)
     return render(request, 'blog/post_detail.html', {'post': post, 'tags': tags})
+
+
+def post_detail_by_id(request, pk):
+    post = get_object_or_404(Post, pk=pk)
+    return redirect('blog:post_detail', permanent=True, slug=post.slug)
 
 
 @login_required(login_url="/admin/login/?next=/")
@@ -53,27 +58,24 @@ def post_new(request):
             form = PostForm(request.POST)
             if form.is_valid():
                 post = form.save(commit=False)
-                post.author = request.user
-                post.published_date = timezone.now()
-                post.save()
+                post.publish(request.user)
                 form.save_m2m()
-                return redirect('post_detail', pk=post.pk)
+                return redirect('blog:post_detail', slug=post.slug)
         else:
             form = PostForm()
         return render(request, 'blog/post_edit.html', {'form': form})
 
 
 @login_required(login_url="/admin/login/?next=/")
-def post_edit(request, pk):
-        post = get_object_or_404(Post, pk=pk)
+def post_edit(request, slug):
+        post = get_object_or_404(Post, slug=slug)
         if request.method == "POST":
             form = PostForm(request.POST, instance=post)
             if form.is_valid():
                 post = form.save(commit=False)
-                post.author = request.user
-                post.save()
+                post.publish(request.user)
                 form.save_m2m()
-                return redirect('post_detail', pk=post.pk)
+                return redirect('blog:post_detail', slug=post.slug)
         else:
             form = PostForm(instance=post)
         return render(request, 'blog/post_edit.html', {'form': form})
@@ -91,4 +93,4 @@ class RSSFeed(Feed):
         return Truncator(item.text).words(20, html=True)
 
     def item_link(self, item):
-        return reverse('post_detail', kwargs={'pk': item.pk})
+        return reverse('blog:post_detail_by_id', kwargs={'pk': item.pk})

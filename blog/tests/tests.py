@@ -10,7 +10,7 @@ class BlogTest(TestCase):
     fixtures = ["blog/tests/test_data.json"]
 
     def test_list(self):
-        url = reverse('post_list')
+        url = reverse('blog:post_list')
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
         self.assertTemplateUsed(res, 'blog/post_list.html')
@@ -19,12 +19,12 @@ class BlogTest(TestCase):
     def test_create_post(self):
         # create new post
         self.client.force_login(User.objects.get_or_create(username='tester')[0])
-        url = reverse('post_new')
+        url = reverse('blog:post_new')
         res = self.client.post(url, {'title': 'Posting test', 'text': "Some text"})
-        self.assertRedirects(res, '/post/3/')
+        self.assertRedirects(res, '/post/posting-test/')
 
         # check created post
-        url = reverse('post_detail', kwargs={"pk": 3})
+        url = reverse('blog:post_detail', kwargs={"slug": 'posting-test'})
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
         self.assertTemplateUsed(res, 'blog/post_detail.html')
@@ -32,36 +32,36 @@ class BlogTest(TestCase):
 
     def test_create_post_unauthorised(self):
         # create new post without authorisation
-        url = reverse('post_new')
+        url = reverse('blog:post_new')
         res = self.client.post(url, {'title': 'Posting test', 'text': "Some text"})
         # print(res.content.decode())
         self.assertRedirects(res, '/admin/login/?next=/new/')
 
         # check post is not created
-        url = reverse('post_detail', kwargs={"pk": 3})
+        url = reverse('blog:post_detail', kwargs={"slug": 'posting-test'})
         res = self.client.get(url)
         self.assertEquals(res.status_code, 404)
 
     def test_delete_post(self):
         # delete post
         self.client.force_login(User.objects.get_or_create(username='tester')[0])
-        url = reverse('post_detail', kwargs={"pk": 2})
+        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
         res = self.client.post(url, {'action': 'delete'})
         self.assertRedirects(res, '/')
 
         # check post is deleted
-        url = reverse('post_detail', kwargs={"pk": 2})
+        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
         res = self.client.get(url)
         self.assertEquals(res.status_code, 404)
 
     def test_delete_post_unauthorised(self):
         # delete post without authorisation
-        url = reverse('post_detail', kwargs={"pk": 2})
+        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
         res = self.client.post(url, {'action': 'delete'})
-        self.assertRedirects(res, '/admin/login/?next=/post/2')
+        self.assertRedirects(res, '/admin/login/?next=/post/testing-tools')
 
         # check post is not deleted
-        url = reverse('post_detail', kwargs={"pk": 2})
+        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
         self.assertContains(res, 'Testing tools')
@@ -70,7 +70,7 @@ class BlogTest(TestCase):
 class BlogAppearanceTest(TestCase):
 
     def test_empty_list(self):
-        url = reverse('post_list')
+        url = reverse('blog:post_list')
         res = self.client.get(url)
         self.assertContains(res, 'Ничего не найдено')
 
@@ -85,7 +85,7 @@ class SidePanelTest(TestCase):
     def test_many_posts(self):
         user = User.objects.get_or_create(username='tester')[0]
         for n in range(6):
-            Post(author=user, title="Post #{0}".format(n)).publish()
+            Post(author=user, title="Post #{0}".format(n)).publish(user)
         rendered = self.TEMPLATE.render(Context({}))
         self.assertIn("Post #5", rendered)
         self.assertNotIn("Post #6", rendered)

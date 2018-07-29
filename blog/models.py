@@ -1,14 +1,18 @@
 from django.db import models
 from django.db.models import Count, Max, Min
+from django.urls import reverse
 from django.utils import timezone
 from taggit.managers import TaggableManager
 from taggit.models import Tag
 from tinymce.models import HTMLField
 
+from .utils import unique_slug_generator
+
 
 class Post(models.Model):
     author = models.ForeignKey('auth.User')
     title = models.CharField(max_length=200)
+    slug = models.SlugField(blank=True, unique=True)
     text = HTMLField()
     created_date = models.DateTimeField(default=timezone.now)
     published_date = models.DateTimeField(blank=True, null=True)
@@ -17,9 +21,21 @@ class Post(models.Model):
     class Meta:
         ordering = ['-published_date']
 
-    def publish(self):
+    def get_absolute_url(self):
+        return reverse("blog:post_detail", kwargs={'slug': self.slug})
+
+    def save(self):
+        if not self.slug:
+            self.slug = unique_slug_generator(self)
+        if self.slug.isdigit():
+            self.slug += '_'
+        super().save()
+
+    def publish(self, user):
         self.published_date = timezone.now()
+        self.author = user
         self.save()
+        return self
 
     def __unicode__(self):
         return self.title

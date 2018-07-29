@@ -1,4 +1,5 @@
 Django==1.11.1
 django-taggit==0.22.1
-unidecode
-django-tinymce
+Unidecode==1.0.22
+django-tinymce==2.7.0
+pytils==0.3

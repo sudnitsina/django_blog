@@ -7,7 +7,7 @@ from .models import Post
 @admin.register(Post)
 class PostAdmin(admin.ModelAdmin):
 
-    list_display = ('title', 'created_date', 'published_date', 'tag_list')
+    list_display = ('title', 'slug', 'created_date', 'published_date', 'tag_list')
     list_filter = ('published_date', 'tags')
     search_fields = ('title',)
 

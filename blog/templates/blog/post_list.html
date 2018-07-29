@@ -6,19 +6,19 @@
 {% for post in posts %}
 <div class="post">
 	<div class="post-header">
-		<h2><a href="{% url 'post_detail' pk=post.pk %}">{{ post.title }}</a></h2>
+		<h2><a href="{{ post.get_absolute_url }}">{{ post.title }}</a></h2>
 		<div class="date"><i class="fa fa-calendar"></i> {{ post.published_date}}</div>
 		{% if post.tags.names %}
 		<div class="tag">
 			<i class="fa fa-tags"></i>
 			{% for tag in post.tags.all %}
-			<a href="{% url 'post_list' tag_slug=tag.slug%}">{{ tag.name }}</a>
+			<a href="{% url 'blog:post_list' tag_slug=tag.slug%}">{{ tag.name }}</a>
       {% endfor %}
 		</div>
 		{% endif %}
 	</div>
 	{{ post.text|safe|linebreaksbr|truncatewords_html:80 }}<br>
-	<a href="{% url 'post_detail' pk=post.pk %}">Читать далее</a>
+	<a href="{{ post.get_absolute_url }}">Читать далее</a>
 </div>
 {% endfor %}
 {% else %}

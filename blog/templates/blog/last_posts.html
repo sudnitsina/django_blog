@@ -2,7 +2,7 @@
 <h2>Последние</h2>
 <ul>
 {% for i in post_list %}
-  <li><a href="{% url 'post_detail' pk=i.pk %}"> {{ i.title }} </a> <br>
+  <li><a href="{{ i.get_absolute_url }}"> {{ i.title }} </a> <br>
   <div class="date"> {{ i.published_date }} </div>
 {% empty %}
   <li>В блоге еще нет записей</li>
@@ -13,6 +13,6 @@
 <div class="block" style="text-align: center">
   <h2> Теги </h2>
   {% for tag in cloud %}
-  <a href="{% url 'post_list' tag_slug=tag.slug %}" style="font-size: {{tag.f}}px; margin: 2px ">{{ tag.name }}</a>
+  <a href="{% url 'blog:post_list' tag_slug=tag.slug %}" style="font-size: {{tag.f}}px; margin: 2px ">{{ tag.name }}</a>
   {% endfor %}
 </div>
