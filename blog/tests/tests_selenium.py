@@ -1,6 +1,7 @@
 """ GUI tests for blog """
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from selenium.webdriver.firefox.options import Options
 from selenium.webdriver.firefox.webdriver import WebDriver
 
 from blog.tests.page_objects.login_page import LoginPage
@@ -13,7 +14,10 @@ class MySeleniumTests(StaticLiveServerTestCase):
     fixtures = ["blog/tests/test_data.json"]
 
     def setUp(self):
-        self.selenium = WebDriver()
+        options = Options()
+        options.add_argument("--headless")
+
+        self.selenium = WebDriver(firefox_options=options)
         self.selenium.implicitly_wait(10)
 
     def tearDown(self):

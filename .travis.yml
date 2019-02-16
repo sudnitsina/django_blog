@@ -2,14 +2,15 @@ language: python
 python:
   - "3.6"
 install:
-  - "pip install -r tests/test_requirements.txt"
+  - "pip install -r requirements.txt"
+  - "pip install selenium"
   - "pip install coveralls"
 addons:
   firefox: latest
 before_install:
   - wget https://github.com/mozilla/geckodriver/releases/download/v0.21.0/geckodriver-v0.21.0-linux64.tar.gz
   - tar -xvf geckodriver-v0.21.0-linux64.tar.gz
-- export PATH=$PATH:$PWD
+  - export PATH=$PATH:$PWD
 script:
   - coverage run --source=blog manage.py test
 after_success: coveralls
