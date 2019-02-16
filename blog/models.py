@@ -27,8 +27,7 @@ class Post(models.Model):
     def save(self):
         if not self.slug:
             self.slug = unique_slug_generator(self)
-        if self.slug.isdigit():
-            self.slug += '_'
+
         super().save()
 
     def publish(self, user):
@@ -37,25 +36,23 @@ class Post(models.Model):
         self.save()
         return self
 
-    def __unicode__(self):
-        return self.title
-
     def __str__(self):
         return self.title
 
 
-def font_size(self):
-    max_font = 28
-    min_font = 12
+def font_size(self, max_font=28, min_font=12):
+    """ Calculate font size for tag based on it's occurrence
+    """
     v = Tag.objects.all().annotate(c=Count('post')).filter(c__gt=0).aggregate(Min('c'), Max('c'))
     max_tag, min_tag = v["c__max"], v["c__min"]
     try:
-        step = (max_font - min_font)/float(max_tag-min_tag)
+        step = (max_font - min_font) / float(max_tag - min_tag)
     except ZeroDivisionError:
         step = 1
     tag_count = Post.objects.filter(tags__name=self.name).count()
-    font = int(min_font + (tag_count-min_tag)*step)
-    return font
+    size = int(min_font + (tag_count - min_tag) * step)
+
+    return size
 
 
 Tag.f = font_size
