@@ -13,5 +13,5 @@ before_install:
   - tar -xvf geckodriver-v0.21.0-linux64.tar.gz
   - export PATH=$PATH:$PWD
 script:
-  - coverage run --source=blog manage.py test
+  - coverage run --source=blog --omit='blog/tests/*' manage.py test
 after_success: coveralls
