@@ -9,6 +9,7 @@ from selenium.webdriver.firefox.webdriver import WebDriver
 
 from blog.tests.page_objects.login_page import LoginPage
 from blog.tests.page_objects.posts_page import PostsPage
+from blog.tests.page_objects.post_page import PostPage, EditPostPage
 from blog.tests.utils import get_screenshot
 
 with open('blog/tests/test_data.json') as f:
@@ -16,6 +17,8 @@ with open('blog/tests/test_data.json') as f:
 
 logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
+
+# TODO: move test data to files
 
 
 class MySeleniumTests(StaticLiveServerTestCase):
@@ -78,3 +81,25 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
         title = page.post_block_title(1)
         assert title.text == DATA[2]["fields"]["title"]
+
+    def test_edit_tags(self):
+        """ Add tags to post
+        """
+        self.selenium.get(self.live_server_url)
+        page = PostsPage(self.selenium)
+        title = page.post_block_title(1)
+        title.click()
+
+        PostPage(self.selenium).edit()
+
+        LoginPage(self.selenium).login("tester", "Qwerty123")
+
+        edit_post_page = EditPostPage(self.selenium)
+        edit_post_page.add_tags("a", "b", "C")
+        edit_post_page.save()
+        page = PostPage(self.selenium)
+        assert len(page.get_tags()) == 3
+
+        # TODO: make separate test for tag filtering
+        page.click_tag("a")
+        assert self.selenium.current_url[-7:] == "/tag/a/"
