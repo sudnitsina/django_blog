@@ -20,6 +20,11 @@ class PostsPage(BasePage):
 
     # TODO: separate class for post
 
+    def open(self):
+        """ Open this page in browser
+        """
+        self.driver.get(self.url)
+
     def post_block_title(self, index: int):
         """
         :param index: number of block

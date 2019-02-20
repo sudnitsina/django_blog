@@ -1,0 +1,4 @@
+nerodia==0.14.0
+pytest==4.2.1
+pytest-django==3.4.7
+selenium==3.141.0
