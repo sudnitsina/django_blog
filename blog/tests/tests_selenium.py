@@ -1,7 +1,16 @@
-""" GUI tests for blog """
+""" GUI tests for blog
+run: python manage.py test
+or
+python -m pytest blog/tests/tests_selenium.py
+install pytest-xdist to use multiple processes
+python -m pytest -n 2 blog/tests/tests_selenium.py
+"""
 
 import json
 import logging
+import pytest
+
+from django.contrib.auth.models import User
 
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from selenium.webdriver.firefox.options import Options
@@ -19,6 +28,13 @@ logger = logging.getLogger(__name__)
 logging.basicConfig(level=logging.INFO)
 
 # TODO: move test data to files
+
+
+@pytest.fixture(autouse=True)
+def user(db):
+    User.objects.create_superuser(username="admin",
+                                  email="test@test.test",
+                                  password="admin")
 
 
 class MySeleniumTests(StaticLiveServerTestCase):
@@ -43,6 +59,7 @@ class MySeleniumTests(StaticLiveServerTestCase):
 
         self.selenium.quit()
 
+    @pytest.mark.page('login.html')
     def test_login(self):
         """ Check login and redirection
         """
