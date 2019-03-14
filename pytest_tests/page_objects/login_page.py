@@ -3,7 +3,6 @@ from nerodia import browser
 
 
 class BasePage:
-
     def __init__(self, br):
         if isinstance(br, browser.Browser):
             self.browser = br
@@ -29,6 +28,7 @@ class SideMenu:
 
 class MainPage(BasePage):
     """Page object"""
+
     def __init__(self, browser):
         self.browser = browser
         self.side_menu = SideMenu(browser)
