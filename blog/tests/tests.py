@@ -20,67 +20,66 @@ class BlogTest(TestCase):
 
     def test_list(self):
 
-        url = reverse('blog:post_list')
+        url = reverse("blog:post_list")
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
-        self.assertTemplateUsed(res, 'blog/post_list.html')
-        self.assertContains(res, 'Testing tools')
+        self.assertTemplateUsed(res, "blog/post_list.html")
+        self.assertContains(res, "Testing tools")
 
     def test_create_post(self):
         # create new post
-        self.assertFalse(Post.objects.filter(slug='posting-test').exists())
-        self.client.force_login(User.objects.get_or_create(username='tester')[0])
-        url = reverse('blog:post_new')
-        res = self.client.post(url, {'title': 'Posting test', 'text': "Some text"})
-        self.assertRedirects(res, '/post/posting-test/')
+        self.assertFalse(Post.objects.filter(slug="posting-test").exists())
+        self.client.force_login(User.objects.get_or_create(username="tester")[0])
+        url = reverse("blog:post_new")
+        res = self.client.post(url, {"title": "Posting test", "text": "Some text"})
+        self.assertRedirects(res, "/post/posting-test/")
 
         # check created post
-        self.assertTrue(Post.objects.filter(slug='posting-test').exists())
+        self.assertTrue(Post.objects.filter(slug="posting-test").exists())
 
-        url = reverse('blog:post_detail', kwargs={"slug": 'posting-test'})
+        url = reverse("blog:post_detail", kwargs={"slug": "posting-test"})
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
-        self.assertTemplateUsed(res, 'blog/post_detail.html')
-        self.assertContains(res, 'Posting test')
+        self.assertTemplateUsed(res, "blog/post_detail.html")
+        self.assertContains(res, "Posting test")
 
     def test_create_post_unauthorised(self):
         # create new post without authorisation
-        url = reverse('blog:post_new')
-        res = self.client.post(url, {'title': 'Posting test', 'text': "Some text"})
+        url = reverse("blog:post_new")
+        res = self.client.post(url, {"title": "Posting test", "text": "Some text"})
         # print(res.content.decode())
-        self.assertRedirects(res, '/admin/login/?next=/new/')
+        self.assertRedirects(res, "/admin/login/?next=/new/")
 
-        self.assertFalse(Post.objects.filter(title='Posting test').exists())
+        self.assertFalse(Post.objects.filter(title="Posting test").exists())
 
     def test_delete_post(self):
-        self.assertTrue(Post.objects.filter(slug='testing-tools').exists())
+        self.assertTrue(Post.objects.filter(slug="testing-tools").exists())
         # delete post
-        self.client.force_login(User.objects.get_or_create(username='tester')[0])
-        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
-        res = self.client.post(url, {'action': 'delete'})
-        self.assertRedirects(res, '/')
+        self.client.force_login(User.objects.get_or_create(username="tester")[0])
+        url = reverse("blog:post_detail", kwargs={"slug": "testing-tools"})
+        res = self.client.post(url, {"action": "delete"})
+        self.assertRedirects(res, "/")
 
-        self.assertFalse(Post.objects.filter(slug='testing-tools').exists())
+        self.assertFalse(Post.objects.filter(slug="testing-tools").exists())
 
     def test_delete_post_unauthorised(self):
         # delete post without authorisation
-        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
-        res = self.client.post(url, {'action': 'delete'})
-        self.assertRedirects(res, '/admin/login/?next=/post/testing-tools')
+        url = reverse("blog:post_detail", kwargs={"slug": "testing-tools"})
+        res = self.client.post(url, {"action": "delete"})
+        self.assertRedirects(res, "/admin/login/?next=/post/testing-tools")
 
         # check post is not deleted
-        url = reverse('blog:post_detail', kwargs={"slug": 'testing-tools'})
+        url = reverse("blog:post_detail", kwargs={"slug": "testing-tools"})
         res = self.client.get(url)
         self.assertEquals(res.status_code, 200)
-        self.assertContains(res, 'Testing tools')
+        self.assertContains(res, "Testing tools")
 
 
 class BlogAppearanceTest(TestCase):
-
     def test_empty_list(self):
-        url = reverse('blog:post_list')
+        url = reverse("blog:post_list")
         res = self.client.get(url)
-        self.assertContains(res, 'Ничего не найдено')
+        self.assertContains(res, "Ничего не найдено")
 
 
 class SidePanelTest(TestCase):
@@ -88,10 +87,10 @@ class SidePanelTest(TestCase):
 
     def test_empty(self):
         rendered = self.TEMPLATE.render(Context({}))
-        self.assertIn('В блоге еще нет записей', rendered)
+        self.assertIn("В блоге еще нет записей", rendered)
 
     def test_many_posts(self):
-        user = User.objects.get_or_create(username='tester')[0]
+        user = User.objects.get_or_create(username="tester")[0]
         for n in range(6):
             Post(author=user, title="Post #{0}".format(n)).publish(user)
         rendered = self.TEMPLATE.render(Context({}))

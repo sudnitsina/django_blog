@@ -36,7 +36,9 @@ class PostPage(BasePage):
         """ Click post tag
         :param tag_name:
         """
-        self.driver.find_element(self.tags[0], self.tags[1] + f"[text()='{tag_name}']").click()
+        self.driver.find_element(
+            self.tags[0], self.tags[1] + f"[text()='{tag_name}']"
+        ).click()
 
 
 class EditPostPage(BasePage):
@@ -49,7 +51,10 @@ class EditPostPage(BasePage):
         self.side_panel = SidePanelElement(driver)
 
         self.tags_field = By.ID, "id_tags"
-        self.save_button = By.XPATH, "/html/body/div[2]/div[1]/div/form/table/tbody/tr[4]/td/button"
+        self.save_button = (
+            By.XPATH,
+            "/html/body/div[2]/div[1]/div/form/table/tbody/tr[4]/td/button",
+        )
 
     def add_tags(self, *tags, separator=","):
         """ Enter tags to tags field using specified separator

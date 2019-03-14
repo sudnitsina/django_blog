@@ -10,7 +10,7 @@ from .utils import unique_slug_generator
 
 
 class Post(models.Model):
-    author = models.ForeignKey('auth.User')
+    author = models.ForeignKey("auth.User")
     title = models.CharField(max_length=200)
     slug = models.SlugField(blank=True, unique=True)
     text = HTMLField()
@@ -19,10 +19,10 @@ class Post(models.Model):
     tags = TaggableManager(blank=True)
 
     class Meta:
-        ordering = ['-published_date']
+        ordering = ["-published_date"]
 
     def get_absolute_url(self):
-        return reverse("blog:post_detail", kwargs={'slug': self.slug})
+        return reverse("blog:post_detail", kwargs={"slug": self.slug})
 
     def save(self):
         if not self.slug:
@@ -43,7 +43,12 @@ class Post(models.Model):
 def font_size(self, max_font=28, min_font=12):
     """ Calculate font size for tag based on it's occurrence
     """
-    v = Tag.objects.all().annotate(c=Count('post')).filter(c__gt=0).aggregate(Min('c'), Max('c'))
+    v = (
+        Tag.objects.all()
+        .annotate(c=Count("post"))
+        .filter(c__gt=0)
+        .aggregate(Min("c"), Max("c"))
+    )
     max_tag, min_tag = v["c__max"], v["c__min"]
     try:
         step = (max_font - min_font) / float(max_tag - min_tag)

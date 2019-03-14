@@ -12,7 +12,7 @@ from blog.tests.page_objects.posts_page import PostsPage
 from blog.tests.page_objects.post_page import PostPage, EditPostPage
 from blog.tests.utils import get_screenshot
 
-with open('blog/tests/test_data.json') as f:
+with open("blog/tests/test_data.json") as f:
     DATA = json.load(f)
 
 logger = logging.getLogger(__name__)
@@ -22,8 +22,8 @@ logging.basicConfig(level=logging.INFO)
 
 
 class MySeleniumTests(StaticLiveServerTestCase):
-    """ GUI tests for blog
-    """
+    """GUI tests for blog."""
+
     fixtures = ["blog/tests/test_data.json"]
 
     def setUp(self):
@@ -38,15 +38,18 @@ class MySeleniumTests(StaticLiveServerTestCase):
     def tearDown(self):
         for method, error in self._outcome.errors:
             if error:
-                logger.info('%s failed. Screenshot saved: %s',
-                            self._testMethodName, get_screenshot(self.selenium))
+                logger.info(
+                    "%s failed. Screenshot saved: %s",
+                    self._testMethodName,
+                    get_screenshot(self.selenium),
+                )
 
         self.selenium.quit()
 
     def test_login(self):
         """ Check login and redirection
         """
-        self.selenium.get(f'{self.live_server_url}/admin/login/?next=/')
+        self.selenium.get(f"{self.live_server_url}/admin/login/?next=/")
         LoginPage(self.selenium).login("tester", "Qwerty123")
         logging.info("Verify post page")
         page = PostsPage(self.selenium)

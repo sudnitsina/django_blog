@@ -25,7 +25,9 @@ class PostsPage(BasePage):
         :param index: number of block
         :return: webelement for post title
         """
-        return self.driver.find_element_by_xpath(f"/html/body/div[2]/div[1]/div[{index}]/div/h2/a")
+        return self.driver.find_element_by_xpath(
+            f"/html/body/div[2]/div[1]/div[{index}]/div/h2/a"
+        )
 
     def posts(self):
         """ Return list of post elements from page

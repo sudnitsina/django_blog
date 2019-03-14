@@ -1,7 +1,7 @@
 import os
 import requests
 
-FILE_PATH = 'screenshot.png'
+FILE_PATH = "screenshot.png"
 
 
 def get_screenshot(driver):
