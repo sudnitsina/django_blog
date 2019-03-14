@@ -104,5 +104,10 @@ class MySeleniumTests(StaticLiveServerTestCase):
         assert len(page.get_tags()) == 3
 
         # TODO: make separate test for tag filtering
+
+        assert page.side_panel.is_tag_exist("a")
+        assert page.side_panel.is_tag_exist("b")
+        assert page.side_panel.is_tag_exist("C")
+
         page.click_tag("a")
         assert self.selenium.current_url[-7:] == "/tag/a/"
