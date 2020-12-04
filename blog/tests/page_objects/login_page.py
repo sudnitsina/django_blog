@@ -11,7 +11,7 @@ class LoginPage:
         self.name_field = By.NAME, "username"
         self.password_field = By.NAME, "password"
 
-        self.submit_button = By.XPATH, "/html/body/div/div[2]/div/form/div[3]/input"
+        self.submit_button = By.CSS_SELECTOR, "input[type='submit']"
 
     def login(self, username: str, password: str):
         """ Fill and submit login form

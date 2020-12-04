@@ -10,7 +10,7 @@ from .utils import unique_slug_generator
 
 
 class Post(models.Model):
-    author = models.ForeignKey("auth.User")
+    author = models.ForeignKey("auth.User", on_delete=models.CASCADE)
     title = models.CharField(max_length=200)
     slug = models.SlugField(blank=True, unique=True)
     text = HTMLField()
